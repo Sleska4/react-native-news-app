@@ -4,19 +4,21 @@ import { TextInput } from 'react-native-gesture-handler';
 import axios from 'axios';
 
 
-export default function MainPage() {
+export default function MainPage({navigation}) {
 
 
-    const [news, setNews] = useState([])
+    const [news, setNews] = useState()
+    const [value, setValue] = useState('');
     const apiKey = '5205778383d44f128dba9905d4942acd';
     const apiUrl = 'https://news-api-v2.herokuapp.com';
-    const input = 'test'
   
     async function getNews(){
       try{
-        await axios.get(`${apiUrl}/everything?&language=ru&q=${input}&apiKey=${apiKey}`)
+        await axios.get(`${apiUrl}/everything?&language=ru&q=${value}&apiKey=${apiKey}`)
         .then ((el) => {
-          console.log(el)
+          setNews(el.data.articles);
+          console.log(value)
+          navigation.navigate('news', el.data.articles)
         })
       } catch(err){
         console.log(err)
@@ -30,6 +32,7 @@ export default function MainPage() {
             <TextInput
                 style={styles.input}
                 placeholder="Введите запрос: "
+                onChangeText={setValue}
             />
 
         </View>
